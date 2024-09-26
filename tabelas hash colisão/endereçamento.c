@@ -154,7 +154,30 @@ void exibir_todas(TabelaHash *tabela) {
 
 
 // Função de busca
-    Produto *buscar(TabelaHash *tabela, char *nome, int indiciePopularidade) {
+Produto *buscar_linear(TabelaHash *tabela, char *nome, int indiciePopularidade) {
+    int indice = funcao_hash(nome);  // Calcula o índice para busca
+    Produto *produto = tabela -> tabela[indice];
+    
+    if (produto.indiciePopularidade == indiciePopularidade){
+        return produto;
+    }
+    return NULL;  // Retorna NULL se não for encontrada
+}
+
+Produto *buscar_duploHashing(TabelaHash *tabela, char *nome, int indiciePopularidade) {
+    int indice = funcao_hash(nome);  // Calcula o índice para busca
+    Produto *atual = tabela -> tabela[indice];
+    
+    while (atual != NULL) {
+        if (atual -> indiciePopularidade == indiciePopularidade) {
+            return atual;  // Retorna o produto se encontrado
+        }
+        atual = atual -> proximo;  // Vai para o próximo produto na lista ligada
+    }
+    return NULL;  // Retorna NULL se não for encontrada
+}
+
+Produto *buscar_quadrática(TabelaHash *tabela, char *nome, int indiciePopularidade) {
     int indice = funcao_hash(nome);  // Calcula o índice para busca
     Produto *atual = tabela -> tabela[indice];
     
