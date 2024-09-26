@@ -166,7 +166,7 @@ int main() {
     printf("\nBuscar um Produto:\n");
     Produto *t = buscar(&tabela, "Geladeira Smart Sony T-300X Deluxe", 1);
     if (t != NULL) {
-        printf("Produto encontrado: indiciePopularidade: %d, Preco: %.2f, nome: %s, categoria: %s, Disponibilidade: %i ",
+        printf("Produto encontrado: Indicie de Popularidade: %d, Preco: %.2f, nome: %s, categoria: %s, Disponibilidade: %i ",
                t -> indiciePopularidade, t -> Preco, t -> nome, t -> categoria, t -> Disponibilidade);
     } else {
         printf("Produto não encontrado.\n");
