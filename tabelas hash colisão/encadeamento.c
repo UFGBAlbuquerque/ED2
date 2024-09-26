@@ -93,7 +93,7 @@ void excluir(TabelaHash *tabela, char *nome, int indiciePopularidade) {
                 anterior -> proximo = atual -> proximo;  // Remove o elemento no meio ou fim
             }
             free(atual);  // Libera a memória do produto
-            printf("Transação com ID %d foi excluída.\n", indiciePopularidade);
+            printf("Produto com Indicie de popularidade %d foi excluído.\n", indiciePopularidade);
             return;
         }
         anterior = atual;
