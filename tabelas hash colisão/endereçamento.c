@@ -4,10 +4,10 @@
 
 #define TAMANHO_HASH 10
 
-// Estrutura para representar uma transação financeira
+// Estrutura para representar um produto
 typedef struct {
 	int indiciePopularidade;               // indiciePopularidade
-	float Preco;          // preC'o do produto
+	float Preco;          // preo do produto
 	char nome[100];       // nome do produto
 	char categoria[20];      // categoria do produto
 	int Disponibilidade;     // Disponibilidade do Produto
@@ -16,22 +16,22 @@ typedef struct {
 
 // Estrutura da Tabela Hash
 typedef struct {
-	Produto tabela[TAMANHO_HASH];  // Array de transaC'C5es
+	Produto tabela[TAMANHO_HASH];  // Array de produtos
 } TabelaHash;
 
-// FunC'C#o Hash: Retorna o C-ndice baseado no ID da transaC'C#o
+// Função Hash: Retorna o Índice baseado no ID da transação
 int funcao_hash(char *nome) {
 	int soma = 0;
 	for (int i = 0; nome[i] != '\0'; i++) {
 		soma += nome[i];
 	}
 	return soma % TAMANHO_HASH;
-	// Usa mC3dulo para determinar a posiC'C#o na tabela
+	// Usa nome para determinar índice na tabela
 }
 
-// FunC'C#o hash para duplo hashing
+// Função hash para duplo hashing
 int hash2(int indiciePopularidade) {
-	return 7 - (indiciePopularidade % 7);  // Segunda funC'C#o hash para duplo hashing
+	return 7 - (indiciePopularidade % 7);  // Segunda função hash para duplo hashing
 }
 
 // Sondagem linear
@@ -40,26 +40,26 @@ int sondagem_linear(TabelaHash *tabela, char *nome) {
 	int tentativas = 0;
 
 	while (tabela->tabela[indice].ocupada && tentativas < TAMANHO_HASH) {
-		indice = (indice + 1) % TAMANHO_HASH;  // AvanC'a linearmente
+		indice = (indice + 1) % TAMANHO_HASH;  // Avança linearmente
 		tentativas++;
 	}
 
-	return (tentativas < TAMANHO_HASH) ? indice : -1;  // Retorna o C-ndice ou -1 se a tabela estiver cheia
+	return (tentativas < TAMANHO_HASH) ? indice : -1;  // Retorna o Índice ou -1 se a tabela estiver cheia
 }
 
-// Sondagem quadrC!tica
+// Sondagem quadrática
 int sondagem_quadratica(TabelaHash *tabela, char *nome) {
 	int indice = funcao_hash(nome);
 	int i = 1;
 	int tentativas = 0;
 
 	while (tabela -> tabela[indice].ocupada && tentativas < TAMANHO_HASH) {
-		indice = (funcao_hash(nome) + i * i) % TAMANHO_HASH;  // AvanC'a quadraticamente
+		indice = (funcao_hash(nome) + i * i) % TAMANHO_HASH;  // Avança quadraticamente
 		i++;
 		tentativas++;
 	}
 
-	return (tentativas < TAMANHO_HASH) ? indice : -1;  // Retorna o C-ndice ou -1 se a tabela estiver cheia
+	return (tentativas < TAMANHO_HASH) ? indice : -1;  // Retorna o Índice ou -1 se a tabela estiver cheia
 }
 
 // Duplo hashing
@@ -73,10 +73,10 @@ int duplo_hashing(TabelaHash *tabela, char *nome, int indiciePopularidade) {
 		tentativas++;
 	}
 
-	return (tentativas < TAMANHO_HASH) ? indice : -1;  // Retorna o C-ndice ou -1 se a tabela estiver cheia
+	return (tentativas < TAMANHO_HASH) ? indice : -1;  // Retorna o Índice ou -1 se a tabela estiver cheia
 }
 
-// FunC'C#o para criar uma nova transaC'C#o
+// Função para criar um novo produto
 Produto criar_produto(int indiciePopularidade, float Preco, const char *nome, const char *categoria, int Disponibilidade) {
 	Produto novo_produto;
 	novo_produto.indiciePopularidade = indiciePopularidade;
@@ -88,61 +88,61 @@ Produto criar_produto(int indiciePopularidade, float Preco, const char *nome, co
 	return novo_produto;
 }
 
-// FunC'C#o para inserir uma transaC'C#o na tabela hash usando sondagem linear
+// Função para inserir um produto na tabela hash usando sondagem linear
 void inserir_linear(TabelaHash *tabela, Produto produto) {
 	int indice = funcao_hash(produto.nome);
 
-	// Se nC#o houver colisC#o, insere diretamente
+	// Se não houver colisão, insere diretamente
 	if (!tabela->tabela[indice].ocupada) {
 		tabela->tabela[indice] = produto;
 	} else {
-		// Se houver colisC#o, chama a sondagem linear
+		// Se houver colisão, chama a sondagem linear
 		int novo_indice = sondagem_linear(tabela, produto.nome);
 		if (novo_indice != -1) {
 			tabela->tabela[novo_indice] = produto;
 		} else {
-			printf("Erro: Tabela hash estC! cheia.\n");
+			printf("Erro: Tabela hash está cheia.\n");
 		}
 	}
 }
 
-// FunC'C#o para inserir uma transaC'C#o na tabela hash usando sondagem quadrC!tica
+// Função para inserir um produto na tabela hash usando sondagem quadrática
 void inserir_quadratica(TabelaHash *tabela, Produto produto) {
 	int indice = funcao_hash(produto.nome);
 
-	// Se nC#o houver colisC#o, insere diretamente
+	// Se não houver colisão, insere diretamente
 	if (!tabela->tabela[indice].ocupada) {
 		tabela->tabela[indice] = produto;
 	} else {
-		// Se houver colisC#o, chama a sondagem quadrC!tica
+		// Se houver colisão, chama a sondagem quadrática
 		int novo_indice = sondagem_quadratica(tabela, produto.nome);
 		if (novo_indice != -1) {
 			tabela->tabela[novo_indice] = produto;
 		} else {
-			printf("Erro: Tabela hash estC! cheia.\n");
+			printf("Erro: Tabela hash está cheia.\n");
 		}
 	}
 }
 
-// FunC'C#o para inserir uma transaC'C#o na tabela hash usando duplo hashing
+// Função para inserir um produto na tabela hash usando duplo hashing
 void inserir_duplo_hashing(TabelaHash *tabela, Produto produto) {
 	int indice = funcao_hash(produto.nome);
 
-	// Se nC#o houver colisC#o, insere diretamente
+	// Se não houver colisão, insere diretamente
 	if (!tabela->tabela[indice].ocupada) {
 		tabela->tabela[indice] = produto;
 	} else {
-		// Se houver colisC#o, chama o duplo hashing
+		// Se houver colisão, chama o duplo hashing
 		int novo_indice = duplo_hashing(tabela, produto.nome, produto.indiciePopularidade);
 		if (novo_indice != -1) {
 			tabela->tabela[novo_indice] = produto;
 		} else {
-			printf("Erro: Tabela hash está! cheia.\n");
+			printf("Erro: Tabela hash está cheia.\n");
 		}
 	}
 }
 
-// FunC'C#o para exibir todas as transaC'C5es
+// Função para exibir todos os produtos
 void exibir_todas(TabelaHash *tabela) {
 	for (int i = 0; i < TAMANHO_HASH; i++) {
 		if (tabela -> tabela[i].ocupada) {
@@ -153,20 +153,20 @@ void exibir_todas(TabelaHash *tabela) {
 }
 
 
-// FunC'C5es de busca
+// Funções de busca
 int buscar_linear(TabelaHash *tabela, char *nome, int indiciePopularidade) {
-	int indice = funcao_hash(nome);  // Calcula o C-ndice para busca
+	int indice = funcao_hash(nome);  // Calcula o índice para busca
 	Produto produto = tabela -> tabela[indice];
 	if (tabela -> tabela[indice].ocupada != 0) {
 		if (produto.indiciePopularidade == indiciePopularidade) {
 			return indice;
 		}
 	}
-	return -1;  // Retorna NULL se nC#o for encontrada
+	return -1;  // Retorna NULL se não for encontrada
 }
 
 int buscar_duploHashing(TabelaHash *tabela, char *nome, int indiciePopularidade) {
-	int indice = funcao_hash(nome);  // Calcula o C-ndice para busca
+	int indice = funcao_hash(nome);  // Calcula o Índice para busca
 	Produto produto = tabela -> tabela[indice];
 	if (tabela -> tabela[indice].ocupada != 0) {
 		if (produto.indiciePopularidade == indiciePopularidade) {
@@ -186,7 +186,7 @@ int buscar_duploHashing(TabelaHash *tabela, char *nome, int indiciePopularidade)
 }
 
 int buscar_quadratica(TabelaHash *tabela, char *nome, int indiciePopularidade) {
-	int indice = funcao_hash(nome);  // Calcula o C-ndice para busca
+	int indice = funcao_hash(nome);  // Calcula o Índice para busca
 	Produto produto = tabela -> tabela[indice];
 	int i = 1, tentativas = 0;
 	if (tabela -> tabela[indice].ocupada != 0) {
@@ -196,7 +196,7 @@ int buscar_quadratica(TabelaHash *tabela, char *nome, int indiciePopularidade) {
 	}
 	else {
 		while (produto.indiciePopularidade != indiciePopularidade && tentativas < TAMANHO_HASH) {
-			indice = (funcao_hash(nome) + i * i) % TAMANHO_HASH;  // AvanC'a quadraticamente
+			indice = (funcao_hash(nome) + i * i) % TAMANHO_HASH;  // Avança quadraticamente
 			produto = tabela -> tabela[indice];
 			i++;
 			tentativas++;
@@ -207,12 +207,12 @@ int buscar_quadratica(TabelaHash *tabela, char *nome, int indiciePopularidade) {
 			}
 		}
 	}
-	return -1;  // Retorna NULL se nC#o for encontrada
+	return -1;  // Retorna NULL se não for encontrada
 }
 
-// FunC'C5es de exclusC#o
+// Funções de exclusão
 int exclusao_linear(TabelaHash *tabela, char *nome, int indiciePopularidade) {
-	int indice = funcao_hash(nome);  // Calcula o C-ndice para busca
+	int indice = funcao_hash(nome);  // Calcula o Índice para busca
 	Produto produto = tabela -> tabela[indice];
 
 	if (tabela -> tabela[indice].ocupada != 0) {
@@ -222,11 +222,11 @@ int exclusao_linear(TabelaHash *tabela, char *nome, int indiciePopularidade) {
 		}
 	}
 
-	return -1;  // Retorna NULL se nC#o for encontrada
+	return -1;  // Retorna NULL se não for encontrada
 }
 
 int exclusao_duploHashing(TabelaHash *tabela, char *nome, int indiciePopularidade) {
-	int indice = funcao_hash(nome);  // Calcula o C-ndice para busca
+	int indice = funcao_hash(nome);  // Calcula o Índice para busca
 	Produto produto = tabela -> tabela[indice];
 
 	if (tabela -> tabela[indice].ocupada != 0) {
@@ -246,11 +246,11 @@ int exclusao_duploHashing(TabelaHash *tabela, char *nome, int indiciePopularidad
 		}
 	}
 
-	return -1;  // Retorna NULL se nC#o for encontrada
+	return -1;  // Retorna NULL se não for encontrada
 }
 
 int exclusao_quadratica(TabelaHash *tabela, char *nome, int indiciePopularidade) {
-	int indice = funcao_hash(nome);  // Calcula o C-ndice para busca
+	int indice = funcao_hash(nome);  // Calcula o Índice para busca
 	Produto produto = tabela -> tabela[indice];
 	int i = 1, tentativas = 0;
 	if (tabela -> tabela[indice].ocupada != 0) {
@@ -261,7 +261,7 @@ int exclusao_quadratica(TabelaHash *tabela, char *nome, int indiciePopularidade)
 	}
 	else {
 		while (produto.indiciePopularidade != indiciePopularidade && tentativas < TAMANHO_HASH) {
-			indice = (funcao_hash(nome) + i * i) % TAMANHO_HASH;  // AvanC'a quadraticamente
+			indice = (funcao_hash(nome) + i * i) % TAMANHO_HASH;  // Avança quadraticamente
 			produto = tabela -> tabela[indice];
 			i++;
 			tentativas++;
@@ -273,19 +273,19 @@ int exclusao_quadratica(TabelaHash *tabela, char *nome, int indiciePopularidade)
 			}
 		}
 	}
-	return -1;  // Retorna NULL se nC#o for encontrada
+	return -1;  // Retorna NULL se não for encontrada
 }
 
-// FunC'C#o principal para demonstrar o uso da tabela hash com sondagem
+// Função principal para demonstrar o uso da tabela hash com sondagem
 int main() {
 	// Inicializa a tabela hash
-	TabelaHash tabela_linear = {0};  // Todos os slots comeC'am desocupados
+	TabelaHash tabela_linear = {0};  // Todos os slots começam desocupados
 	int indice, sucesso;
 
-	// Inserir transaC'C5es na tabela hash usando sondagem linear
+	// Inserir transações na tabela hash usando sondagem linear
 	printf("\nInserção com Sondagem Linear:\n");
 	inserir_linear(&tabela_linear, criar_produto(1, 10000.50, "Geladeira Smart Sony T-300X Deluxe", "Eletrodomesticos", 35));
-	inserir_linear(&tabela_linear, criar_produto(2, 250.75, "Carregador Samsung 220V Long Cable SaC-da 3.16A", "Perifericos", 990));
+	inserir_linear(&tabela_linear, criar_produto(2, 250.75, "Carregador Samsung 220V Long Cable saída 3.16A", "Perifericos", 990));
 	inserir_linear(&tabela_linear, criar_produto(3, 50000.00, "MacBook Air Pro 2000", "Notebook", 5));
 	inserir_linear(&tabela_linear, criar_produto(4, 1200.00, "Smartphone Motorola Edge 20", "Celulares", 50));
 	inserir_linear(&tabela_linear, criar_produto(5, 450.99, "Teclado Mecanico Logitech G413", "Perifericos", 200));
@@ -305,7 +305,7 @@ int main() {
 		printf("Produto excluido.\n");
 	}
 	else {
-		printf("Houve uma falha na exclusC#o.\n");
+		printf("Houve uma falha na exclusão.\n");
 	}
 	indice = buscar_linear(&tabela_linear, "Geladeira Smart Sony T-300X Deluxe", 1);
 	if (indice != -1) {
@@ -317,7 +317,7 @@ int main() {
 	printf("Exibindo todos os produtos.\n");
 	exibir_todas(&tabela_linear);
 
-	// Inserir transaC'C5es na tabela hash usando sondagem quadrC!tica
+	// Inserir transações na tabela hash usando sondagem quadrática
 	printf("\nInserção com Sondagem Quadrática:\n");
 	TabelaHash tabela_quadratica = {0};
 	inserir_quadratica(&tabela_quadratica, criar_produto(6, 3000.50, "Impressora HP DeskJet 2676", "Impressoras", 15));
@@ -353,7 +353,7 @@ int main() {
 	printf("Exibindo todos os produtos.\n");
 	exibir_todas(&tabela_quadratica);
 
-	// Inserir transaC'C5es na tabela hash usando duplo hashing
+	// Inserir transações na tabela hash usando duplo hashing
 	printf("\nInserção com Duplo Hashing:\n");
 	TabelaHash tabela_duplo = {0};
 	inserir_duplo_hashing(&tabela_duplo, criar_produto(11, 1750.30, "Notebook Dell Inspiron 15", "Notebooks", 12));
@@ -377,7 +377,7 @@ int main() {
 		printf("Produto excluido.\n");
 	}
 	else {
-		printf("Houve uma falha na exclusC#o.\n");
+		printf("Houve uma falha na exclusão.\n");
 	}
 	indice = buscar_duploHashing(&tabela_duplo, "TV 4K Samsung 55", 12);
 	if (indice != -1) {
