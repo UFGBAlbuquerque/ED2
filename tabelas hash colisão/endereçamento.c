@@ -168,12 +168,12 @@ int buscar_linear(TabelaHash *tabela, char *nome, int indiciePopularidade) {
 int buscar_duploHashing(TabelaHash *tabela, char *nome, int indiciePopularidade) {
 	int indice = funcao_hash(nome);  // Calcula o Índice para busca
 	Produto produto = tabela -> tabela[indice];
-	if (tabela -> tabela[indice].ocupada != 0) {
+	if (tabela -> tabela[indice].ocupada != 0) { // Garante que a localização do indície não está nula ou ocupada por outra memória não desejada
 		if (produto.indiciePopularidade == indiciePopularidade) {
 			return indice;
 		}
 	}
-
+    // Caso não tenha sido encontrado tenta a segunda função de hashing 
 	indice = hash2(indiciePopularidade);
 	produto = tabela -> tabela[indice];
 	if (tabela -> tabela[indice].ocupada != 0) {
@@ -182,7 +182,7 @@ int buscar_duploHashing(TabelaHash *tabela, char *nome, int indiciePopularidade)
 		}
 	}
 
-	return -1;  // Retorna NULL se nC#o for encontrada
+	return -1;  // Retorna NULL se não for encontrada
 }
 
 int buscar_quadratica(TabelaHash *tabela, char *nome, int indiciePopularidade) {
@@ -194,6 +194,7 @@ int buscar_quadratica(TabelaHash *tabela, char *nome, int indiciePopularidade) {
 			return indice;
 		}
 	}
+	// Caso não tenha sido encontrado, busca por ele por sondagem quadrática.
 	else {
 		while (produto.indiciePopularidade != indiciePopularidade && tentativas < TAMANHO_HASH) {
 			indice = (funcao_hash(nome) + i * i) % TAMANHO_HASH;  // Avança quadraticamente
@@ -217,7 +218,7 @@ int exclusao_linear(TabelaHash *tabela, char *nome, int indiciePopularidade) {
 
 	if (tabela -> tabela[indice].ocupada != 0) {
 		if (produto.indiciePopularidade == indiciePopularidade) {
-			tabela -> tabela[indice].ocupada = 0;
+			tabela -> tabela[indice].ocupada = 0; // Assinala que a posição não está ocupada, impedindo de ser imprimida
 			return 1;
 		}
 	}
@@ -298,7 +299,8 @@ int main() {
 	}
 	printf("Exibindo todos os produtos.\n");
 	exibir_todas(&tabela_linear);
-
+    
+    // Demonstrando que funções de busca e exclusão funcionam
 	printf("Excluindo Geladeira Smart Sony T-300X Deluxe.\n");
 	sucesso = exclusao_linear(&tabela_linear, "Geladeira Smart Sony T-300X Deluxe", 1);
 	if (sucesso != -1) {
@@ -334,7 +336,8 @@ int main() {
 	}
 	printf("Exibindo todos os produtos.\n");
 	exibir_todas(&tabela_quadratica);
-
+    
+    // Demonstrando que funções de busca e exclusão funcionam
 	printf("Excluindo Impressora HP DeskJet 2676.\n");
 	sucesso = exclusao_quadratica(&tabela_quadratica, "Impressora HP DeskJet 2676", 6);
 	if (sucesso != -1) {
@@ -371,6 +374,7 @@ int main() {
 	printf("Exibindo todos os produtos.\n");
 	exibir_todas(&tabela_duplo);
 
+    // Demonstrando que funções de busca e exclusão funcionam
 	printf("Excluindo TV 4K Samsung 55.\n");
 	sucesso = exclusao_duploHashing(&tabela_duplo, "TV 4K Samsung 55", 12);
 	if (sucesso != -1) {
