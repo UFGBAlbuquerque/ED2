@@ -81,7 +81,24 @@ int sequentialSearch(Product products[], int numProducts, const char* target) {
 // Espaço para implementar a busca binária
 int binarySearch(Product products[], int low, int high, const char* target) {
     
-	// Implementar a busca binária aqui
+    while((high - low) != 1){
+    	int mid = (high + low)/2;
+    	if (strcmp(products[mid].name, target) == 0){
+    	    return mid;
+    	}
+    	else if (strcmp(products[mid].name, target) < 0){
+    	    low = mid;
+    	}
+    	else{
+    	    high = mid;
+    	}
+    } 
+    
+    if ((high - low) == 1){
+        if(strcmp(products[low + 1].name, target) == 0){
+            return low + 1;
+        }
+    }
 	
     return -1; // Produto não encontrado (modificar conforme a implementação)
 }
@@ -95,6 +112,8 @@ int compareByName(const void* a, const void* b) {
 // Função principal
 int main() {
     srand(time(NULL)); // Inicializa a semente para geração de números aleatórios
+    clock_t t;
+    double time_taken;
 
     Product products[MAX_PRODUCTS]; // Array de produtos
     int numProducts = MAX_PRODUCTS; // Quantidade de produtos a serem gerados
@@ -110,12 +129,17 @@ int main() {
 
     // Espaço para realizar a busca sequencial
     printf("\nBusca sequencial pelo produto '%s':\n", target);
+    t = clock();
     int seqResult = sequentialSearch(products, numProducts, target);
+    t = clock() - t;
+    time_taken = ((double)t)/CLOCKS_PER_SEC;
     if (seqResult != -1) {
         printf("Produto encontrado na posição %d:\n", seqResult);
         printProduct(products[seqResult]);
+        printf("Tempo levado: %fms\n", time_taken);
     } else {
         printf("Produto não encontrado na busca sequencial.\n");
+        printf("Tempo levado: %fms\n", time_taken);
     }
 
 	// Ordenar a lista de produtos por nome usando qsort
@@ -124,13 +148,19 @@ int main() {
 
     // Espaço para o realizar a busca binária
     printf("\nBusca binária pelo produto '%s':\n", target);
+    t = clock();
     int binResult = binarySearch(products, 0, numProducts - 1, target);
+    t = clock() - t;
+    time_taken = ((double)t)/CLOCKS_PER_SEC;
     if (binResult != -1) {
         printf("Produto encontrado na posição %d:\n", binResult);
         printProduct(products[binResult]);
+        printf("Tempo levado: %fms\n", time_taken);
     } else {
         printf("Produto não encontrado na busca binária.\n");
+        printf("Tempo levado: %fms\n", time_taken);
     }
+    
 
     return 0;
 }
