@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 
-#define MAX_PRODUCTS 1000  // Número de produtos
+#define MAX_PRODUCTS 150000  // Número de produtos
 #define MAX_NAME_LENGTH 50 // Tamanho máximo do nome do produto
 
 // Estrutura que representa um produto no e-commerce
