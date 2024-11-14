@@ -286,9 +286,13 @@ int main() {
     root = insert(root, 40, "Diana");
     root = insert(root, 60, "Frank");
 
-    deleteUser(root, 50);
-    
     printf("Árvore AVL em ordem:\n");
+    inOrder(root);
+    
+    deleteUser(root, 50);
+    ReBalance(root);
+    
+    printf("\nÁrvore AVL em ordem pós-deleção:\n");
     inOrder(root);
     
     printf("\n");
