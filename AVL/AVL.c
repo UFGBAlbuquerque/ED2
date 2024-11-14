@@ -120,7 +120,7 @@ void inOrder(struct Node *root) {
     }
 }
 
-void ReBalance(Node* node){
+void ReBalance(struct Node* node){
     node -> height -= 1;
     while (node -> right != NULL){
         ReBalance(node -> right);
@@ -130,30 +130,37 @@ void ReBalance(Node* node){
     }
 }
 
+struct Node* minNode(struct Node* node) {
+    struct Node* current = node;
+    while (current && current->left != NULL) {
+        current = current->left;
+    }
+    return current;
+}
+
 //Função para remover um nó da árvore
-Node* deleteUser(Node* root, int id) {
-    Node* temp2;
+struct Node* deleteUser(struct Node* root, int id) {
     if (root == NULL) {
         return root; // Caso base: árvore vazia ou usuário não encontrado
     }
     
     // Procurando o nó a ser removido
     if (id < root->id) {
-        root->esquerda = deleteUser(root->esquerda, id);
+        root->left = deleteUser(root->left, id);
     } else if (id > root->id) {
-        root->direita = deleteUser(root->direita, id);
+        root->right = deleteUser(root->right, id);
     } else {
         // Achamos o nó a ser removido
 
         // Caso 1: Nó sem filhos (nó folha)
-        if (root->esquerda == NULL && root->direita == NULL) {
+        if (root->left == NULL && root->right == NULL) {
             free(root);
             return NULL;
         }
         
         // Caso 2: Nó com apenas um filho
-        else if (root->esquerda == NULL) { // Tem apenas filho direito
-            Node* temp = root->direita;
+        else if (root->left == NULL) { // Tem apenas filho direito
+            struct Node* temp = root->right;
             free(root);
             ReBalance(temp);
             // Obter fator de balanceamento
@@ -162,26 +169,26 @@ Node* deleteUser(Node* root, int id) {
             // Casos de rotação para balanceamento
             // Caso Esquerda-Esquerda
             if (balance > 1 && id < temp->left->id)
-                return rightRotate(node);
+                return rightRotate(temp);
         
             // Caso Direita-Direita
-            if (balance < -1 && id > node->right->id)
-                return leftRotate(node);
+            if (balance < -1 && id > temp->right->id)
+                return leftRotate(temp);
         
             // Caso Esquerda-Direita
-            if (balance > 1 && id > node->left->id) {
-                node->left = leftRotate(node->left);
-                return rightRotate(node);
+            if (balance > 1 && id > temp->left->id) {
+                temp->left = leftRotate(temp->left);
+                return rightRotate(temp);
             }
         
             // Caso Direita-Esquerda
-            if (balance < -1 && id < node->right->id) {
-                node->right = rightRotate(node->right);
-                return leftRotate(node);
+            if (balance < -1 && id < temp->right->id) {
+                temp->right = rightRotate(temp->right);
+                return leftRotate(temp);
             }
             return temp;
-        } else if (root->direita == NULL) { // Tem apenas filho esquerdo
-            Node* temp = root->esquerda;
+        } else if (root->right == NULL) { // Tem apenas filho esquerdo
+            struct Node* temp = root->left;
             free(root);
             ReBalance(temp);
             // Obter fator de balanceamento
@@ -190,22 +197,22 @@ Node* deleteUser(Node* root, int id) {
             // Casos de rotação para balanceamento
             // Caso Esquerda-Esquerda
             if (balance > 1 && id < temp->left->id)
-                return rightRotate(node);
+                return rightRotate(temp);
         
             // Caso Direita-Direita
-            if (balance < -1 && id > node->right->id)
-                return leftRotate(node);
+            if (balance < -1 && id > temp->right->id)
+                return leftRotate(temp);
         
             // Caso Esquerda-Direita
-            if (balance > 1 && id > node->left->id) {
-                node->left = leftRotate(node->left);
-                return rightRotate(node);
+            if (balance > 1 && id > temp->left->id) {
+                temp->left = leftRotate(temp->left);
+                return rightRotate(temp);
             }
         
             // Caso Direita-Esquerda
-            if (balance < -1 && id < node->right->id) {
-                node->right = rightRotate(node->right);
-                return leftRotate(node);
+            if (balance < -1 && id < temp->right->id) {
+                temp->right = rightRotate(temp->right);
+                return leftRotate(temp);
             }
             return temp;
         }
@@ -213,14 +220,14 @@ Node* deleteUser(Node* root, int id) {
         // Caso 3: Nó com dois filhos
         else {
             // Encontrando o sucessor em ordem (menor nó da subárvore direita)
-            Node* temp = minNode(root->direita);
+            struct Node* temp = minNode(root->right);
             
             // Copiando os dados do sucessor para o nó atual
             root->id = temp->id;
-            root->idade = temp->idade;
+            strcpy(root -> name, temp -> name);
             
             // Removendo o sucessor da subárvore direita
-            root->direita = deleteUser(root->direita, temp->id);
+            root->right = deleteUser(root->right, temp->id);
         }
     }
     return root;
@@ -239,6 +246,7 @@ int main() {
     root = insert(root, 40, "Diana");
     root = insert(root, 60, "Frank");
 
+    deleteUser(root, 70);
 
     printf("Árvore AVL em ordem:\n");
     inOrder(root);
