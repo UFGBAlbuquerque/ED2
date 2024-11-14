@@ -115,17 +115,29 @@ struct Node* insert(struct Node* node, int id, char name[]) {
 void inOrder(struct Node *root) {
     if(root != NULL) {
         inOrder(root->left);
-        printf("ID: %d, Nome: %s\n", root->id, root->name);
+        printf("ID: %d, Nome: %s, Altura: %i\n", root->id, root->name, root -> height);
         inOrder(root->right);
     }
 }
 
 void ReBalance(struct Node* node){
-    node -> height -= 1;
-    while (node -> right != NULL){
+    struct Node* temp;
+    int height = 0;
+    temp = node;
+    while(temp -> right != NULL || temp -> left != NULL){
+        if (temp -> right != NULL){
+            temp = temp -> right;
+        }
+        else{
+            temp = temp -> left;
+        }
+        height++;
+    }
+    node -> height = height + 1;
+    if (node -> right != NULL){
         ReBalance(node -> right);
     }
-    while (node -> left != NULL){
+    if (node -> left != NULL){
         ReBalance(node -> left);
     }
 }
@@ -228,10 +240,38 @@ struct Node* deleteUser(struct Node* root, int id) {
             
             // Removendo o sucessor da subárvore direita
             root->right = deleteUser(root->right, temp->id);
+            ReBalance(root);
         }
     }
     return root;
 }
+
+//Encontra um node baseado na ID
+struct Node* busca(struct Node* root, int id){
+    if (root == NULL){
+        return root;
+    }
+    
+    while(root -> id != id){
+        if (root -> id < id && root -> right != NULL){
+            root = root -> right;
+        }
+        else if(root -> id > id && root -> left != NULL){
+            root = root -> left;
+        }
+        else if(root -> left == NULL && root -> right == NULL){
+            break;
+        }
+    }
+    
+    if (root -> id == id){
+        return root;
+    }
+    else{
+        return NULL;
+    }
+}
+
 
 // Função principal
 int main() {
@@ -246,12 +286,19 @@ int main() {
     root = insert(root, 40, "Diana");
     root = insert(root, 60, "Frank");
 
-    deleteUser(root, 70);
-
+    deleteUser(root, 50);
+    
     printf("Árvore AVL em ordem:\n");
     inOrder(root);
-
-    // fazer a função para remover um cliente e outra função para buscar um cliente pelo ID
+    
+    printf("\n");
+    struct Node* buscado = busca(root, 70);
+    printf("Node buscado: \nNome: %s, Id: %i\n", buscado -> name, buscado -> id);
+    
+    buscado = busca(root, 800);
+    if (buscado == NULL){
+        printf("\nNode de id 800 não encontrado.\n");
+    }
 
     return 0;
 }
